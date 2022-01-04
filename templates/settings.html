@@ -1,0 +1,86 @@
+
+{% extends "layout.html" %}
+{% block body %}
+  <h1>Settings</h1>
+  {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+
+  <a href="/">Upload another video</a>
+  {% if name.endswith('.mp4') %}
+  <video controls autoplay width="500px" height="300px">
+    <source src="/uploads/{{ created_at }}/{{ name }}">
+    Votre navigateur ne gère pas l'élément <code>video</code>.
+    TODO verifier si la vidéo est traitée
+  </video>
+  {% endif %}
+  <!-- replace these with more appropriate checks -->
+  {% if name.endswith('.jpeg') %}
+  <picture width="500px" height="300px">
+    <source srcset="/uploads/{{ created_at }}/{{ name }}">
+    <img src="/uploads/{{ created_at }}/{{ name }}" alt="MDN">
+  </picture>
+  {% endif %}
+  <div>
+    <p>nbFrames processed / total nb frames (duration * fps)</p>
+    <p>nb sequences found</p>
+  </div>
+  <form method=post enctype=multipart/form-data>
+    <fieldset>
+        <legend>Image options</legend>
+        <label for="BASE_INTER_FRAME_DELAY">Base delay between images. Highest means slower video</label>
+        <input placeholder="0 - 10000 (/100000   Defaults to 0.002)." type=number value="200" min="0" max="10000" name=BASE_INTER_FRAME_DELAY > <!-- base 0.002 #delay between each frame. An increased delay means slomo -->
+        <label for="SLOMO_INTER_FRAME_DELAY">Slomo delay between images.</label>
+        <input placeholder="0 - 1000(/10000 Defaults to 0.02)" type=number value="20" min="0" max="1000" name=SLOMO_INTER_FRAME_DELAY>
+        <br>
+
+        <label for="AROUND_LIGHTNING_FRAMES">Nb of frames to keep before lightning.</label>
+        <input placeholder="0 - 20" type=number value="10" min="0" max="20" name=AROUND_LIGHTNING_FRAMES> <!-- nb frames before vid-->
+
+        <label for="BRIGHTNESS_TOLERANCE_VALUE">BTV - Brightness tolerance value. The lower, the most sensible (may cause false positive).</label>
+        <input placeholder="0-9999 / 100" type=number value="1100" min="0" max="9999" name=BRIGHTNESS_TOLERANCE_VALUE>
+        <br>
+        <label for="HSV_MAX_TOLERANCE">HSV tolerance</label>
+        <input placeholder="0-255. Default 100" type=number value="100" min="0" max="255" name=HSV_MAX_TOLERANCE>
+
+        <label for="HSV_MEAN_VALUE">HSV mean threshold</label>
+        <input placeholder="0-100. Default 55 / 10" type=number value="55" min="0" max="100" name=HSV_MEAN_VALUE>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>Light noise cancellation</legend>
+        <label for="light_cancellation">Perform light cancellation</label>
+        <input type=checkbox checked="false" name="light_cancellation">
+
+        <label for="lc_radius">Light cancellation radius (0-200)</label>
+        <input type=number value="10" min="0" max="200" name="lc_radius">
+
+        <label for="lc_sensibility">Light cancellation sensibility</label>
+        <input type=number value="10" min="0" max="100" name="lc_sensibility">
+    </fieldset>
+
+    <label for="show_processing">Display video being processed</label>
+    <input type=checkbox name="show_processing" value=True checked>
+    <br>
+    <input type="button" name="show_preview" value="Show Preview" href="#/preview">
+
+    <br>
+    <br>
+    <br>
+    <input type=submit value=crankitup>
+  </form>
+
+
+  <!-- <script type="text/javascript" charset="utf-8">
+    // function updateTextInput(targetid, val) {
+    //           document.getElementById(targetid).value=val;
+    //         }
+
+    // The following js code allows to start the video
+    // function process_video() {
+    //   var v = document.getElementsByTagName("video")[0];
+    //   v.play();
+    // }
+  </script> -->
+
+{% endblock %}
